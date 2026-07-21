@@ -1,0 +1,50 @@
+server.port: ${LEARNING_PORT:18091}
+spring:
+  application.name: learning-service
+  datasource:
+    url: ${LEARNING_DB_URL:jdbc:mysql://192.168.1.4:3306/learning?useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${LEARNING_DB_USERNAME:root}
+    password: ${LEARNING_DB_PASSWORD:}
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    table: flyway_history_learning
+    baseline-on-migrate: true
+    baseline-version: 2
+  rabbitmq:
+    host: ${RABBITMQ_HOST:192.168.1.4}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:}
+  data:
+    redis:
+      host: ${REDIS_HOST:192.168.1.4}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+security.internal-call:
+  enabled: ${INTERNAL_CALL_ENABLED:true}
+  secret: ${INTERNAL_CALL_SECRET:}
+learning.pass-score: ${LEARNING_PASS_SCORE:80}
+spring.cloud.nacos.discovery.server-addr: ${NACOS_ADDR:192.168.1.4:8848}
+spring.cloud.nacos.discovery.username: ${NACOS_USERNAME:nacos}
+spring.cloud.nacos.discovery.password: ${NACOS_PASSWORD:}
+spring.cloud.sentinel.transport.dashboard: ${SENTINEL_DASHBOARD:192.168.1.4:8080}
+spring.cloud.sentinel.eager: true
+spring.datasource.druid.max-wait: ${DRUID_MAX_WAIT:30000}
+spring.datasource.druid.connect-timeout: ${DRUID_CONNECT_TIMEOUT:30000}
+spring.data.redis.host: ${REDIS_HOST:192.168.1.4}
+spring.data.redis.port: ${REDIS_PORT:6379}
+spring.data.redis.password: ${REDIS_PASSWORD:}
+security:
+  internal-call:
+    enabled: ${INTERNAL_CALL_ENABLED:true}
+    secret: ${INTERNAL_CALL_SECRET:}
+    internal-paths:
+      - /internal/**
+flowable:
+  rest:
+    base-url: ${FLOWABLE_REST_URL:http://192.168.1.4:8090/flowable-ui/process-api}
+    username: ${FLOWABLE_REST_USERNAME:admin}
+    password: ${FLOWABLE_REST_PASSWORD:test}
+  learning:
+    process-version: ${FLOWABLE_LEARNING_PROCESS_VERSION:1}
+learning.workflow.callback-base-url: ${LEARNING_WORKFLOW_CALLBACK_URL:}

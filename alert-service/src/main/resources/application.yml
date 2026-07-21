@@ -1,0 +1,49 @@
+server:
+  port: ${ALERT_PORT:18085}
+spring:
+  application:
+    name: alert-service
+  datasource:
+    url: ${ALERT_DB_URL:jdbc:mysql://192.168.1.4:3306/ai_audit_alert?serverTimezone=Asia/Shanghai}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    table: flyway_history_alert
+    baseline-on-migrate: true
+    baseline-version: 2
+  rabbitmq:
+    host: ${RABBITMQ_HOST:192.168.1.4}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:}
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 5
+          initial-interval: 1s
+          multiplier: 2
+          max-interval: 30s
+spring.cloud.nacos.discovery.server-addr: ${NACOS_ADDR:192.168.1.4:8848}
+spring.cloud.nacos.discovery.username: ${NACOS_USERNAME:nacos}
+spring.cloud.nacos.discovery.password: ${NACOS_PASSWORD:}
+spring.cloud.sentinel.transport.dashboard: ${SENTINEL_DASHBOARD:192.168.1.4:8080}
+spring.cloud.sentinel.eager: true
+spring.datasource.druid.max-wait: ${DRUID_MAX_WAIT:30000}
+spring.datasource.druid.connect-timeout: ${DRUID_CONNECT_TIMEOUT:30000}
+app:
+  positive-rate:
+    window: ${POSITIVE_RATE_WINDOW:P7D}
+    minimum-denominator: ${POSITIVE_RATE_MIN_DENOMINATOR:30}
+    deviation-threshold: ${POSITIVE_RATE_DEVIATION_THRESHOLD:0.15}
+flowable:
+  rest:
+    base-url: ${FLOWABLE_REST_URL:http://192.168.1.4:8090/flowable-ui/process-api}
+    username: ${FLOWABLE_REST_USERNAME:admin}
+    password: ${FLOWABLE_REST_PASSWORD:test}
+security.internal-call.secret: ${INTERNAL_CALL_SECRET:}
+spring.data.redis.host: ${REDIS_HOST:192.168.1.4}
+spring.data.redis.port: ${REDIS_PORT:6379}
+spring.data.redis.password: ${REDIS_PASSWORD:}
+mybatis-plus:
+  type-handlers-package: com.yo.mybatis.typehandler

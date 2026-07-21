@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="ai-audit">
+  <process id="importRecovery" name="Import Recovery" isExecutable="true">
+    <startEvent id="start"/>
+    <sequenceFlow id="toRecovery" sourceRef="start" targetRef="recoverFailedRow"/>
+    <userTask id="recoverFailedRow"
+              name="Recover ${subject}"
+              flowable:candidateUsers="admin,quality_manager"/>
+    <sequenceFlow id="toDecision" sourceRef="recoverFailedRow" targetRef="decision"/>
+    <exclusiveGateway id="decision"/>
+    <sequenceFlow id="retry" sourceRef="decision" targetRef="applyRetry">
+      <conditionExpression xsi:type="tFormalExpression">${resolution == 'RETRY'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="abandon" sourceRef="decision" targetRef="applyAbandon">
+      <conditionExpression xsi:type="tFormalExpression">${resolution == 'ABANDON'}</conditionExpression>
+    </sequenceFlow>
+    <serviceTask id="applyRetry" name="Authorize import retry" flowable:type="http">
+      <extensionElements>
+        <flowable:field name="requestMethod"><flowable:string>POST</flowable:string></flowable:field>
+        <flowable:field name="requestUrl"><flowable:expression>${retryCallbackUrl}</flowable:expression></flowable:field>
+        <flowable:field name="requestHeaders"><flowable:string>Content-Type: application/json</flowable:string></flowable:field>
+        <flowable:field name="requestBody"><flowable:string>{}</flowable:string></flowable:field>
+        <flowable:field name="failStatusCodes"><flowable:string>400,401,403,404,409,500,501,502,503,504</flowable:string></flowable:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="retryApplied" sourceRef="applyRetry" targetRef="retryEnd"/>
+    <serviceTask id="applyAbandon" name="Accept import failure" flowable:type="http">
+      <extensionElements>
+        <flowable:field name="requestMethod"><flowable:string>POST</flowable:string></flowable:field>
+        <flowable:field name="requestUrl"><flowable:expression>${abandonCallbackUrl}</flowable:expression></flowable:field>
+        <flowable:field name="requestHeaders"><flowable:string>Content-Type: application/json</flowable:string></flowable:field>
+        <flowable:field name="requestBody"><flowable:string>{}</flowable:string></flowable:field>
+        <flowable:field name="failStatusCodes"><flowable:string>400,401,403,404,409,500,501,502,503,504</flowable:string></flowable:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="abandonApplied" sourceRef="applyAbandon" targetRef="abandonedEnd"/>
+    <endEvent id="retryEnd" name="Retry authorized"/>
+    <endEvent id="abandonedEnd" name="Failure accepted"/>
+  </process>
+</definitions>

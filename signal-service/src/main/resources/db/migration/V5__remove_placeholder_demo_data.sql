@@ -1,0 +1,2 @@
+DELETE FROM signal_index
+WHERE curve_id IN ('CURVE-DEMO-001', 'CURVE-DEMO-002');

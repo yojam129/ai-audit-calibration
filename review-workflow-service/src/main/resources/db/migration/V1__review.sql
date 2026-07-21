@@ -1,0 +1,2 @@
+CREATE TABLE review_task(id BINARY(16) PRIMARY KEY,sample_id BINARY(16) NOT NULL UNIQUE,status VARCHAR(24) NOT NULL,owner_id VARCHAR(64),process_instance_id VARCHAR(64),version BIGINT NOT NULL DEFAULT 0);
+CREATE TABLE ground_truth(id BINARY(16) PRIMARY KEY,sample_id BINARY(16) NOT NULL,truth_version BIGINT NOT NULL,task_id BINARY(16) NOT NULL,reviewer_id VARCHAR(64) NOT NULL,targets_json JSON NOT NULL,confirmed_at TIMESTAMP(6) NOT NULL,UNIQUE KEY uk_truth(sample_id,truth_version));

@@ -1,0 +1,44 @@
+server.port: ${NOTIFICATION_PORT:18090}
+spring:
+  application.name: notification-service
+  datasource:
+    url: ${NOTIFICATION_DB_URL:jdbc:mysql://192.168.1.4:3306/notification?useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${NOTIFICATION_DB_USERNAME:root}
+    password: ${NOTIFICATION_DB_PASSWORD:}
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    table: flyway_history_notification
+    baseline-on-migrate: true
+    baseline-version: 2
+  mail:
+    host: ${MAIL_HOST:smtp.qq.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties.mail.smtp:
+      auth: ${MAIL_SMTP_AUTH:true}
+      starttls.enable: ${MAIL_STARTTLS_ENABLED:true}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:192.168.1.4}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:}
+    listener.simple:
+      default-requeue-rejected: false
+      retry:
+        enabled: true
+        max-attempts: 5
+        initial-interval: 1s
+        multiplier: 2
+        max-interval: 30s
+notification.email.enabled: ${EMAIL_NOTIFICATION_ENABLED:false}
+spring.cloud.nacos.discovery.server-addr: ${NACOS_ADDR:192.168.1.4:8848}
+spring.cloud.nacos.discovery.username: ${NACOS_USERNAME:nacos}
+spring.cloud.nacos.discovery.password: ${NACOS_PASSWORD:}
+spring.cloud.sentinel.transport.dashboard: ${SENTINEL_DASHBOARD:192.168.1.4:8080}
+spring.cloud.sentinel.eager: true
+spring.datasource.druid.max-wait: ${DRUID_MAX_WAIT:30000}
+spring.datasource.druid.connect-timeout: ${DRUID_CONNECT_TIMEOUT:30000}
+spring.data.redis.host: ${REDIS_HOST:192.168.1.4}
+spring.data.redis.port: ${REDIS_PORT:6379}
+spring.data.redis.password: ${REDIS_PASSWORD:}

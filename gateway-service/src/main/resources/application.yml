@@ -1,0 +1,85 @@
+server:
+  port: ${GATEWAY_PORT:18088}
+spring:
+  application:
+    name: gateway-service
+  data:
+    redis:
+      url: redis://:${REDIS_PASSWORD:052213}@${REDIS_HOST:192.168.1.4}:${REDIS_PORT:6379}
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_ADDR:192.168.1.4:8848}
+        username: ${NACOS_USERNAME:nacos}
+        password: ${NACOS_PASSWORD:}
+      config:
+        server-addr: ${NACOS_ADDR:192.168.1.4:8848}
+        namespace: ${NACOS_NAMESPACE:}
+        group: ${NACOS_GROUP:AI_AUDIT}
+        import-check:
+          enabled: false
+    sentinel:
+      transport:
+        dashboard: ${SENTINEL_DASHBOARD:192.168.1.4:8080}
+      eager: true
+      datasource:
+        gateway-flow:
+          nacos:
+            server-addr: ${NACOS_ADDR:192.168.1.4:8848}
+            namespace: ${NACOS_NAMESPACE:}
+            group-id: ${NACOS_GROUP:AI_AUDIT}
+            data-id: ${spring.application.name}-gw-flow.json
+            data-type: json
+            rule-type: gw-flow
+        gateway-api-group:
+          nacos:
+            server-addr: ${NACOS_ADDR:192.168.1.4:8848}
+            namespace: ${NACOS_NAMESPACE:}
+            group-id: ${NACOS_GROUP:AI_AUDIT}
+            data-id: ${spring.application.name}-gw-api-group.json
+            data-type: json
+            rule-type: gw-api-group
+        service-degrade:
+          nacos:
+            server-addr: ${NACOS_ADDR:192.168.1.4:8848}
+            namespace: ${NACOS_NAMESPACE:}
+            group-id: ${NACOS_GROUP:AI_AUDIT}
+            data-id: ${spring.application.name}-degrade.json
+            data-type: json
+            rule-type: degrade
+    gateway:
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          "[/**]":
+            allowed-origin-patterns: ${CORS_ALLOWED_ORIGINS:http://localhost:*}
+            allowed-methods: [GET, POST, PUT, ATCH, DELETE, OPTIONS]
+            allowed-headers: "*"
+            allow-credentials: true
+      discovery.locator:
+        enabled: true
+        lower-case-service-id: true
+      routes:
+        - { id: auth, uri: lb://auth-service, predicates: [Path=/auth/**] }
+        - { id: integration, uri: lb://integration-service, predicates: [Path=/api/integration/**] }
+        - { id: sample, uri: lb://sample-service, predicates: [Path=/api/samples/**] }
+        - { id: primary-review, uri: lb://sample-service, predicates: [Path=/api/v1/primary-reviews/**] }
+        - { id: signal, uri: lb://signal-service, predicates: [Path=/api/signals/**] }
+        - { id: judgement, uri: lb://judgement-service, predicates: [Path=/api/v1/comparisons/**] }
+        - { id: alert, uri: lb://alert-service, predicates: [Path=/api/v1/alerts/**] }
+        - { id: review, uri: lb://review-workflow-service, predicates: [Path=/api/v1/reviews/**] }
+        - { id: statistics, uri: lb://statistics-service, predicates: [Path=/api/v1/statistics/**] }
+        - { id: risk, uri: lb://risk-control-service, predicates: [Path=/api/v1/risks/**] }
+        - { id: learning, uri: lb://learning-service, predicates: [Path=/api/v1/learning/**] }
+        - { id: trace, uri: lb://trace-service, predicates: [Path=/api/v1/traces/**] }
+        - { id: notification, uri: lb://notification-service, predicates: [Path=/api/v1/notifications/**] }
+        - { id: models, uri: lb://model-registry-service, predicates: [Path=/api/Models/**] }
+management.endpoints.web.exposure.include: health,info,gateway
+security:
+  jwt:
+    secret: ${JWT_SECRET:}
+    issuer: ${JWT_ISSUER:ai-audit-auth}
+    public-paths:
+      - /auth/login
+      - /auth/refresh
+      - /actuator/health

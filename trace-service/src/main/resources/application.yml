@@ -1,0 +1,31 @@
+server.port: ${TRACE_PORT:18089}
+spring:
+  application.name: trace-service
+  datasource:
+    url: ${TRACE_DB_URL:jdbc:mysql://192.168.1.4:3306/trace?useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${TRACE_DB_USERNAME:root}
+    password: ${TRACE_DB_PASSWORD:}
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    table: flyway_history_trace
+    baseline-on-migrate: true
+    baseline-version: 2
+  elasticsearch.uris: ${ELASTICSEARCH_URIS:http://192.168.1.4:9200}
+trace.elasticsearch.enabled: ${TRACE_ES_ENABLED:true}
+trace.elasticsearch.project-delay: ${TRACE_ES_PROJECT_DELAY:2000}
+trace.archive:
+  enabled: ${TRACE_ARCHIVE_ENABLED:false}
+  endpoint: ${MINIO_ENDPOINT:http://192.168.1.4:9000}
+  access-key: ${MINIO_ACCESS_KEY:}
+  secret-key: ${MINIO_SECRET_KEY:}
+  bucket: ${TRACE_ARCHIVE_BUCKET:ai-audit-archive}
+spring.cloud.nacos.discovery.server-addr: ${NACOS_ADDR:192.168.1.4:8848}
+spring.cloud.nacos.discovery.username: ${NACOS_USERNAME:nacos}
+spring.cloud.nacos.discovery.password: ${NACOS_PASSWORD:}
+spring.cloud.sentinel.transport.dashboard: ${SENTINEL_DASHBOARD:192.168.1.4:8080}
+spring.cloud.sentinel.eager: true
+spring.datasource.druid.max-wait: ${DRUID_MAX_WAIT:30000}
+spring.datasource.druid.connect-timeout: ${DRUID_CONNECT_TIMEOUT:30000}
+spring.data.redis.host: ${REDIS_HOST:192.168.1.4}
+spring.data.redis.port: ${REDIS_PORT:6379}
+spring.data.redis.password: ${REDIS_PASSWORD:}

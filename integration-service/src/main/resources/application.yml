@@ -1,0 +1,44 @@
+server:
+  port: ${INTEGRATION_PORT:18093}
+spring:
+  application:
+    name: integration-service
+  datasource:
+    url: ${INTEGRATION_DB_URL:jdbc:mysql://192.168.1.4:3306/ai_audit_integration}
+    username: ${INTEGRATION_DB_USER:}
+    password: ${INTEGRATION_DB_PASSWORD:}
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    table: flyway_history_integration
+    baseline-on-migrate: true
+    baseline-version: 2
+app:
+  import:
+    max-attempts: ${IMPORT_MAX_ATTEMPTS:5}
+    poll-delay: ${IMPORT_POLL_DELAY:2000}
+  minio:
+    endpoint: ${MINIO_ENDPOINT:http://192.168.1.4:9000}
+    access-key: ${MINIO_ACCESS_KEY:}
+    secret-key: ${MINIO_SECRET_KEY:}
+    incoming-bucket: ${MINIO_INCOMING_BUCKET:ai-audit-incoming}
+flowable:
+  rest:
+    base-url: ${FLOWABLE_REST_URL:http://192.168.1.4:8090/flowable-ui/process-api}
+    username: ${FLOWABLE_REST_USERNAME:admin}
+    password: ${FLOWABLE_REST_PASSWORD:test}
+    import-process-version: ${FLOWABLE_IMPORT_PROCESS_VERSION:2}
+  import:
+    callback-base-url: ${INTEGRATION_WORKFLOW_CALLBACK_URL:http://192.168.1.6:18093}
+spring.cloud.nacos.discovery.server-addr: ${NACOS_ADDR:192.168.1.4:8848}
+spring.cloud.nacos.discovery.username: ${NACOS_USERNAME:nacos}
+spring.cloud.nacos.discovery.password: ${NACOS_PASSWORD:}
+spring.cloud.sentinel.transport.dashboard: ${SENTINEL_DASHBOARD:192.168.1.4:8080}
+spring.cloud.sentinel.eager: true
+spring.datasource.druid.max-wait: ${DRUID_MAX_WAIT:30000}
+spring.datasource.druid.connect-timeout: ${DRUID_CONNECT_TIMEOUT:30000}
+spring.data.redis.host: ${REDIS_HOST:192.168.1.4}
+spring.data.redis.port: ${REDIS_PORT:6379}
+spring.data.redis.password: ${REDIS_PASSWORD:}
+security.internal-call:
+  enabled: ${INTERNAL_CALL_ENABLED:true}
+  secret: ${INTERNAL_CALL_SECRET:}

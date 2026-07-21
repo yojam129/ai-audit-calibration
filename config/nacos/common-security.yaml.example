@@ -1,0 +1,13 @@
+security:
+  internal-call:
+    enabled: true
+    secret: ${INTERNAL_CALL_SECRET}
+    allowed-clock-skew: PT2M
+    internal-paths:
+      - /internal/**
+    public-paths:
+      - /actuator/health
+
+# Import this shared configuration from each servlet business service.
+# INTERNAL_CALL_SECRET must be the same on callers and receivers and must never be stored in Nacos
+# as plaintext. Business service ports should still be isolated from untrusted networks.

@@ -1,0 +1,11 @@
+[
+  {
+    "resource": "integration",
+    "grade": 0,
+    "count": 5,
+    "timeWindow": 20,
+    "minRequestAmount": 5,
+    "statIntervalMs": 10000,
+    "slowRatioThreshold": 0.6
+  }
+]

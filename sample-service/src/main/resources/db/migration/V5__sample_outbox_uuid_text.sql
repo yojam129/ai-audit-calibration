@@ -1,0 +1,2 @@
+ALTER TABLE sample_outbox
+    MODIFY COLUMN id CHAR(36) NOT NULL;

@@ -1,0 +1,20 @@
+[
+  {
+    "apiName": "sample-import-api",
+    "predicateItems": [
+      {
+        "matchStrategy": 1,
+        "pattern": "/api/integration/**"
+      }
+    ]
+  },
+  {
+    "apiName": "ai-inference-api",
+    "predicateItems": [
+      {
+        "matchStrategy": 1,
+        "pattern": "/api/signals/inference/**"
+      }
+    ]
+  }
+]

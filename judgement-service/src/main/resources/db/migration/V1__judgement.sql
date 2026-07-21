@@ -1,0 +1,3 @@
+CREATE TABLE comparison_run(id BINARY(16) PRIMARY KEY,sample_id BINARY(16) NOT NULL,comparison_version BIGINT NOT NULL,consistency VARCHAR(32) NOT NULL,risk_rank INT NOT NULL,reason_codes VARCHAR(1000),created_at TIMESTAMP(6) NOT NULL,UNIQUE KEY uk_comparison(sample_id,comparison_version));
+CREATE TABLE judgement(id BINARY(16) PRIMARY KEY,sample_id BINARY(16) NOT NULL,source_type VARCHAR(16) NOT NULL,actor_id VARCHAR(64),submitted_at TIMESTAMP(6) NOT NULL,UNIQUE KEY uk_judgement_source(sample_id,source_type));
+CREATE TABLE judgement_target(id BINARY(16) PRIMARY KEY,judgement_id BINARY(16) NOT NULL,target_code VARCHAR(64) NOT NULL,label VARCHAR(24) NOT NULL,confidence DECIMAL(6,5),reason_code VARCHAR(64),UNIQUE KEY uk_judgement_target(judgement_id,target_code));

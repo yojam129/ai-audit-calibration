@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="ai-audit-learning">
+  <process id="reviewerQualification" name="Reviewer qualification recovery" isExecutable="true">
+    <startEvent id="start" />
+    <sequenceFlow id="toTraining" sourceRef="start" targetRef="trainingTask" />
+
+    <userTask id="trainingTask" name="Complete required training - ${courseCode}" flowable:assignee="${reviewerId}" />
+    <sequenceFlow id="toExamRequired" sourceRef="trainingTask" targetRef="markExamRequired" />
+
+    <serviceTask id="markExamRequired" name="Mark exam required" flowable:type="http">
+      <extensionElements>
+        <flowable:field name="requestMethod"><flowable:string>POST</flowable:string></flowable:field>
+        <flowable:field name="requestUrl"><flowable:expression>${examRequiredCallbackUrl}</flowable:expression></flowable:field>
+        <flowable:field name="requestHeaders"><flowable:string>Content-Type: application/json</flowable:string></flowable:field>
+        <flowable:field name="requestBody"><flowable:string>{}</flowable:string></flowable:field>
+        <flowable:field name="failStatusCodes"><flowable:string>400,401,403,404,409,500,501,502,503,504</flowable:string></flowable:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="toExam" sourceRef="markExamRequired" targetRef="examTask" />
+
+    <userTask id="examTask" name="Pass qualification exam - ${courseCode}" flowable:assignee="${reviewerId}" />
+    <sequenceFlow id="toResult" sourceRef="examTask" targetRef="examResult" />
+    <exclusiveGateway id="examResult" />
+    <sequenceFlow id="retryExam" sourceRef="examResult" targetRef="examTask">
+      <conditionExpression xsi:type="tFormalExpression">${allCorrect == false}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="passedExam" sourceRef="examResult" targetRef="markRestorePending">
+      <conditionExpression xsi:type="tFormalExpression">${allCorrect == true}</conditionExpression>
+    </sequenceFlow>
+
+    <serviceTask id="markRestorePending" name="Mark permission restore pending" flowable:type="http">
+      <extensionElements>
+        <flowable:field name="requestMethod"><flowable:string>POST</flowable:string></flowable:field>
+        <flowable:field name="requestUrl"><flowable:expression>${restorePendingCallbackUrl}</flowable:expression></flowable:field>
+        <flowable:field name="requestHeaders"><flowable:string>Content-Type: application/json</flowable:string></flowable:field>
+        <flowable:field name="requestBody"><flowable:string>{}</flowable:string></flowable:field>
+        <flowable:field name="failStatusCodes"><flowable:string>400,401,403,404,409,500,501,502,503,504</flowable:string></flowable:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="toRestore" sourceRef="markRestorePending" targetRef="restorePermission" />
+
+    <serviceTask id="restorePermission" name="Restore primary review permission" flowable:type="http">
+      <extensionElements>
+        <flowable:field name="requestMethod"><flowable:string>POST</flowable:string></flowable:field>
+        <flowable:field name="requestUrl"><flowable:expression>${restoreCallbackUrl}</flowable:expression></flowable:field>
+        <flowable:field name="requestHeaders"><flowable:string>Content-Type: application/json</flowable:string></flowable:field>
+        <flowable:field name="requestBody"><flowable:string>{}</flowable:string></flowable:field>
+        <flowable:field name="failStatusCodes"><flowable:string>400,401,403,404,409,500,501,502,503,504</flowable:string></flowable:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="toEnd" sourceRef="restorePermission" targetRef="end" />
+    <endEvent id="end" />
+  </process>
+</definitions>

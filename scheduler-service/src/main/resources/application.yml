@@ -1,0 +1,33 @@
+server.port: ${SCHEDULER_PORT:18095}
+spring:
+  application.name: scheduler-service
+  datasource:
+    url: ${SCHEDULER_DB_URL:jdbc:mysql://192.168.1.4:3306/ai_audit_scheduler?serverTimezone=Asia/Shanghai}
+    username: ${SCHEDULER_DB_USERNAME:root}
+    password: ${SCHEDULER_DB_PASSWORD:}
+  flyway:
+    enabled: true
+  data.redis:
+    host: ${REDIS_HOST:192.168.1.4}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+  cloud.nacos.discovery:
+    server-addr: ${NACOS_ADDR:192.168.1.4:8848}
+    username: ${NACOS_USERNAME:nacos}
+    password: ${NACOS_PASSWORD:}
+  cloud.sentinel.transport.dashboard: ${SENTINEL_DASHBOARD:192.168.1.4:8080}
+  cloud.sentinel.eager: true
+  datasource.druid.max-wait: ${DRUID_MAX_WAIT:30000}
+  datasource.druid.connect-timeout: ${DRUID_CONNECT_TIMEOUT:30000}
+xxl.job:
+  admin.addresses: ${XXL_JOB_ADMIN:http://192.168.1.4:9080/xxl-job-admin}
+  accessToken: ${XXL_JOB_ACCESS_TOKEN:}
+  executor:
+    appname: ai-audit-scheduler
+    ip: ${XXL_JOB_EXECUTOR_IP:}
+    port: ${XXL_JOB_EXECUTOR_PORT:9999}
+security.internal-call.secret: ${INTERNAL_CALL_SECRET:}
+app.ai-training:
+  enabled: ${AI_TRAINING_SCHEDULE_ENABLED:false}
+  cron: ${AI_TRAINING_CRON:0 0 2 * * *}
+  zone: ${AI_TRAINING_ZONE:Asia/Shanghai}

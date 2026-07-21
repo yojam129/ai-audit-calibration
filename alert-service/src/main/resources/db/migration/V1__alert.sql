@@ -1,0 +1,2 @@
+CREATE TABLE alert(id BINARY(16) PRIMARY KEY,sample_id BINARY(16) NOT NULL,comparison_version BIGINT NOT NULL,level VARCHAR(4) NOT NULL,status VARCHAR(20) NOT NULL,reason_codes VARCHAR(1000),sla_due_at TIMESTAMP(6) NOT NULL,owner_id VARCHAR(64),version BIGINT NOT NULL DEFAULT 0,UNIQUE KEY uk_alert_comparison(sample_id,comparison_version));
+CREATE TABLE consumed_event(event_id BINARY(16) PRIMARY KEY,consumed_at TIMESTAMP(6) NOT NULL);

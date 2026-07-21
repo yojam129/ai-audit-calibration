@@ -1,0 +1,37 @@
+server:
+  port: ${AUTH_PORT:18081}
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://192.168.1.4:3306/ai_audit_auth?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:}
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    table: flyway_history_auth
+    baseline-on-migrate: true
+    baseline-version: 3
+  data:
+    redis:
+      host: ${REDIS_HOST:192.168.1.4}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+security:
+  internal-call:
+    enabled: ${INTERNAL_CALL_ENABLED:true}
+    secret: ${INTERNAL_CALL_SECRET:}
+    internal-paths:
+      - /internal/**
+  jwt:
+    secret: ${JWT_SECRET:}
+    issuer: ${JWT_ISSUER:ai-audit-auth}
+    access-ttl: ${JWT_ACCESS_TTL:PT30M}
+    refresh-ttl: ${JWT_REFRESH_TTL:P7D}
+spring.cloud.nacos.discovery.server-addr: ${NACOS_ADDR:192.168.1.4:8848}
+spring.cloud.nacos.discovery.username: ${NACOS_USERNAME:nacos}
+spring.cloud.nacos.discovery.password: ${NACOS_PASSWORD:}
+spring.cloud.sentinel.transport.dashboard: ${SENTINEL_DASHBOARD:192.168.1.4:8080}
+spring.cloud.sentinel.eager: true
+spring.datasource.druid.max-wait: ${DRUID_MAX_WAIT:30000}
+spring.datasource.druid.connect-timeout: ${DRUID_CONNECT_TIMEOUT:30000}

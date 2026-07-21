@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:flowable="http://flowable.org/bpmn" targetNamespace="ai-audit">
+  <process id="sampleAuditMain" name="Sample audit main flow" isExecutable="true">
+    <startEvent id="importCompleted" name="Excel import completed"/>
+    <sequenceFlow id="toAi" sourceRef="importCompleted" targetRef="awaitAi"/>
+    <receiveTask id="awaitAi" name="Await AI judgement completed"/>
+    <sequenceFlow id="toPrimary" sourceRef="awaitAi" targetRef="primaryReview"/>
+    <userTask id="primaryReview" name="Primary review - ${sampleId}" flowable:candidateUsers="admin,primary_reviewer"/>
+    <sequenceFlow id="toComparison" sourceRef="primaryReview" targetRef="awaitComparison"/>
+    <receiveTask id="awaitComparison" name="Await three-way comparison completed"/>
+    <sequenceFlow id="toRoute" sourceRef="awaitComparison" targetRef="comparisonRoute"/>
+    <exclusiveGateway id="comparisonRoute" default="toSecondary"/>
+    <sequenceFlow id="toAutoArchive" sourceRef="comparisonRoute" targetRef="archiveCallback">
+      <conditionExpression xsi:type="tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${consistency == 'ALL_AGREE'}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="toSecondary" sourceRef="comparisonRoute" targetRef="secondaryReview"/>
+    <userTask id="secondaryReview" name="${priority} secondary final review - ${sampleId}" flowable:candidateUsers="admin,secondary_reviewer"/>
+    <sequenceFlow id="secondaryToTruthCheck" sourceRef="secondaryReview" targetRef="truthComplete"/>
+    <exclusiveGateway id="truthComplete" default="truthIncomplete"/>
+    <sequenceFlow id="truthAccepted" sourceRef="truthComplete" targetRef="archiveCallback">
+      <conditionExpression xsi:type="tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">${finalTruthComplete == true}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="truthIncomplete" sourceRef="truthComplete" targetRef="secondaryReview"/>
+    <receiveTask id="archiveCallback" name="Await authoritative archive callback"/>
+    <sequenceFlow id="finish" sourceRef="archiveCallback" targetRef="archived"/>
+    <endEvent id="archived" name="ARCHIVED"/>
+  </process>
+</definitions>

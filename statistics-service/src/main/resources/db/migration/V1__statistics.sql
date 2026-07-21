@@ -1,0 +1,3 @@
+CREATE TABLE accuracy_projection(source_type VARCHAR(20) PRIMARY KEY,correct_count BIGINT NOT NULL DEFAULT 0,total_count BIGINT NOT NULL DEFAULT 0,updated_at TIMESTAMP(6));
+CREATE TABLE confusion_projection(projection_key VARCHAR(100) PRIMARY KEY,source_type VARCHAR(20) NOT NULL,target_code VARCHAR(64) NOT NULL,tp BIGINT NOT NULL DEFAULT 0,tn BIGINT NOT NULL DEFAULT 0,fp BIGINT NOT NULL DEFAULT 0,fn BIGINT NOT NULL DEFAULT 0,indeterminate BIGINT NOT NULL DEFAULT 0,invalid_count BIGINT NOT NULL DEFAULT 0,updated_at TIMESTAMP(6),UNIQUE KEY uk_confusion(source_type,target_code));
+CREATE TABLE consumed_event(event_id BINARY(16) PRIMARY KEY,consumed_at TIMESTAMP(6) NOT NULL);

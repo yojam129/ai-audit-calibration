@@ -1,0 +1,47 @@
+server:
+  port: ${STATISTICS_PORT:18092}
+spring:
+  application:
+    name: statistics-service
+  datasource:
+    url: ${STATISTICS_DB_URL:jdbc:mysql://192.168.1.4:3306/ai_audit_statistics?serverTimezone=Asia/Shanghai}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    table: flyway_history_statistics
+    baseline-on-migrate: true
+    baseline-version: 2
+  rabbitmq:
+    host: ${RABBITMQ_HOST:192.168.1.4}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:}
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 5
+          initial-interval: 1s
+          multiplier: 2
+          max-interval: 30s
+  data:
+    redis:
+      host: ${REDIS_HOST:192.168.1.4}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${STATISTICS_REDIS_DATABASE:5}
+spring.cloud.nacos.discovery.server-addr: ${NACOS_ADDR:192.168.1.4:8848}
+spring.cloud.nacos.discovery.username: ${NACOS_USERNAME:nacos}
+spring.cloud.nacos.discovery.password: ${NACOS_PASSWORD:}
+spring.cloud.sentinel.transport.dashboard: ${SENTINEL_DASHBOARD:192.168.1.4:8080}
+spring.cloud.sentinel.eager: true
+spring.datasource.druid.max-wait: ${DRUID_MAX_WAIT:30000}
+spring.datasource.druid.connect-timeout: ${DRUID_CONNECT_TIMEOUT:30000}
+security:
+  internal-call:
+    enabled: ${INTERNAL_CALL_ENABLED:true}
+    secret: ${INTERNAL_CALL_SECRET:}
+    internal-paths:
+      - /internal/**
+mybatis-plus:
+  type-handlers-package: com.yo.mybatis.typehandler

@@ -1,0 +1,21 @@
+package com.yo.sample.domain.po;
+
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import java.time.Instant;
+
+@TableName("sample_outbox")
+public class SampleOutboxEvent {
+  @TableId public String id;
+  public String aggregateType;
+  public String aggregateId;
+  public String eventType;
+  public String routingKey;
+  public String payload;
+  public String status;
+  public int attempts;
+  public Instant nextAttemptAt;
+  public Instant createdAt;
+  public Instant publishedAt;
+  public String lastError;
+}

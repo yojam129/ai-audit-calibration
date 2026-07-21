@@ -1,0 +1,54 @@
+server:
+  port: ${SIGNAL_PORT:18083}
+spring:
+  rabbitmq:
+    host: ${RABBITMQ_HOST:192.168.1.4}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:}
+    publisher-confirm-type: correlated
+  application:
+    name: signal-service
+  datasource:
+    url: ${SIGNAL_DB_URL:jdbc:mysql://192.168.1.4:3306/ai_audit_signal}
+    username: ${SIGNAL_DB_USER:}
+    password: ${SIGNAL_DB_PASSWORD:}
+  data:
+    mongodb:
+      uri: ${SIGNAL_MONGODB_URI:mongodb://192.168.1.4:27017/ai_audit_signal}
+      auto-index-creation: ${MONGODB_AUTO_INDEX:true}
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    table: flyway_history_signal
+    baseline-on-migrate: true
+    baseline-version: 2
+spring.cloud.nacos.discovery.server-addr: ${NACOS_ADDR:192.168.1.4:8848}
+spring.cloud.nacos.discovery.username: ${NACOS_USERNAME:nacos}
+spring.cloud.nacos.discovery.password: ${NACOS_PASSWORD:}
+spring.cloud.sentinel.transport.dashboard: ${SENTINEL_DASHBOARD:192.168.1.4:8080}
+spring.cloud.sentinel.eager: true
+spring.datasource.druid.max-wait: ${DRUID_MAX_WAIT:30000}
+spring.datasource.druid.connect-timeout: ${DRUID_CONNECT_TIMEOUT:30000}
+app:
+  ai-inference:
+    base-url: ${AI_INFERENCE_BASE_URL:http://localhost:18000}
+    timeout: ${AI_INFERENCE_TIMEOUT:3s}
+    model-code: ${AI_MODEL_CODE:curve-classifier}
+    recovery-batch-size: ${AI_INFERENCE_RECOVERY_BATCH_SIZE:25}
+    recovery-initial-delay: ${AI_INFERENCE_RECOVERY_INITIAL_DELAY:15000}
+    recovery-delay: ${AI_INFERENCE_RECOVERY_DELAY:10000}
+  ai-training:
+    base-url: ${AI_TRAINING_BASE_URL:${AI_INFERENCE_BASE_URL:http://localhost:18000}}
+    timeout: ${AI_TRAINING_TIMEOUT:30m}
+    model-code: ${AI_MODEL_CODE:curve-classifier}
+    window: ${AI_TRAINING_WINDOW:7d}
+    zone: ${AI_TRAINING_ZONE:Asia/Shanghai}
+    activate: ${AI_TRAINING_AUTO_ACTIVATE:true}
+    traffic-percent: ${AI_TRAINING_TRAFFIC_PERCENT:100}
+internal.hmac.secret: ${INTERNAL_CALL_SECRET:}
+security.internal-call:
+  enabled: ${INTERNAL_CALL_ENABLED:true}
+  secret: ${INTERNAL_CALL_SECRET:}
+spring.data.redis.host: ${REDIS_HOST:192.168.1.4}
+spring.data.redis.port: ${REDIS_PORT:6379}
+spring.data.redis.password: ${REDIS_PASSWORD:}
