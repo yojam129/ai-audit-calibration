@@ -26,4 +26,4 @@ npm run build
 ```
 
 网关端口为 `8088`，前端开发端口为 `5173`。所有 Java 业务服务均注册到 Nacos，
-服务间 OpenFeign 契约集中在 `yo-api`。
+服务间 OpenFeign 定义在 `yo-api`。
